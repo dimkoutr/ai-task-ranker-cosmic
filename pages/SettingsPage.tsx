@@ -32,6 +32,8 @@ const THEMES: { name: ThemeName; label: string; gradient: string; isPremium: boo
   { name: 'golden-radiance', label: 'Golden Radiance', gradient: 'bg-gradient-to-br from-yellow-500 via-amber-500 to-orange-600', isPremium: true },
 ];
 
+const APP_VERSION = '1.1.0'; // Static version number
+
 const SettingsPage: React.FC<SettingsPageProps> = ({
   currentUser,
   currentTheme,
@@ -147,7 +149,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
         <div className="container mx-auto max-w-4xl">
           <button
             onClick={onBack}
-            className="text-text-accent hover:text-text-accent-hover transition-colors duration-200 text-sm hover:underline mb-4 inline-flex items-center gap-1 group"
+            className="text-text-accent hover:text-text-accent-hover transition-colors duration-200 text-sm hover:underline mb-4 inline-flex items-center gap-1 group focus:outline-none focus-visible:ring-1 focus-visible:ring-border-focus-alt rounded"
+            title="Go back to previous page"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -172,7 +175,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 pageFeedback.type === 'warning' ? 'bg-yellow-500/80 border-yellow-400 text-black' :
                 'bg-sky-600/80 border-sky-500 text-white'
               }`}
-              role={pageFeedback.type === 'error' ? 'alert' : 'status'}>
+              role={pageFeedback.type === 'error' ? 'alert' : 'status'}
+              aria-live="polite">
               {pageFeedback.text}
             </div>
           )}
@@ -197,6 +201,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                     <button
                         onClick={onNavigateToSubscription}
                         className="button-primary text-white font-semibold py-2.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out button-active-pop button-hover-glow flex items-center justify-center gap-2 flex-shrink-0"
+                        title={currentUserTierDetails.id === 'free' ? "View upgrade options" : "Manage your subscription"}
                       >
                        {currentUserTierDetails.id === 'free' ? 'Upgrade Plan' : 'Manage Plan'} <ArrowRightIcon className="w-4 h-4" />
                     </button>
@@ -219,9 +224,9 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 <button
                   key={theme.name}
                   onClick={() => handleThemeButtonClick(theme.name)}
-                  className={`p-5 rounded-lg theme-select-button ${theme.gradient} ${currentTheme === theme.name ? 'active' : ''} flex flex-col items-center justify-center aspect-video transition-all duration-200 ease-in-out hover:opacity-90 relative group`}
+                  className={`p-5 rounded-lg theme-select-button ${theme.gradient} ${currentTheme === theme.name ? 'active' : ''} flex flex-col items-center justify-center aspect-video transition-all duration-200 ease-in-out hover:opacity-90 relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-primary focus-visible:ring-border-focus`}
                   aria-pressed={currentTheme === theme.name}
-                  title={`Activate ${theme.label} theme ${theme.isPremium ? '(Premium)' : ''}`}
+                  title={`Activate ${theme.label} theme ${theme.isPremium && !currentUserTierDetails?.accessToAllThemes ? '(Premium - Upgrade to use)' : ''}`}
                 >
                   <span className="block text-center font-semibold text-white text-shadow-sm text-lg">{theme.label}</span>
                   {currentTheme === theme.name && (
@@ -257,8 +262,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 <button
                   onClick={handleExportClick}
                   disabled={isExporting || isProcessingDangerAction || !currentUserTierDetails?.dataExportImport}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-secondary font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-border-focus button-active-pop button-hover-glow flex items-center justify-center gap-2 disabled:opacity-60"
-                  title={!currentUserTierDetails?.dataExportImport ? "Upgrade to Pro to export data" : "Export your data"}
+                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-secondary font-medium transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus button-active-pop button-hover-glow flex items-center justify-center gap-2 disabled:opacity-60"
+                  title={!currentUserTierDetails?.dataExportImport ? "Upgrade to Pro to export data" : "Export your data as a JSON file"}
                 >
                   {isExporting ? <LoadingSpinner className="w-5 h-5" /> : 
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
@@ -284,8 +289,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 <button
                   onClick={handleImportClick}
                   disabled={isImporting || isProcessingDangerAction || !currentUserTierDetails?.dataExportImport}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-secondary font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-border-focus button-active-pop button-hover-glow flex items-center justify-center gap-2 disabled:opacity-60"
-                   title={!currentUserTierDetails?.dataExportImport ? "Upgrade to Pro to import data" : "Import data from file"}
+                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-secondary font-medium transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus button-active-pop button-hover-glow flex items-center justify-center gap-2 disabled:opacity-60"
+                   title={!currentUserTierDetails?.dataExportImport ? "Upgrade to Pro to import data" : "Import data from a JSON file"}
                 >
                   {isImporting ? <LoadingSpinner className="w-5 h-5" /> : 
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
@@ -312,7 +317,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 <button
                   onClick={() => setIsResetConfirmOpen(true)}
                   disabled={isProcessingDangerAction}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-danger-outline font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-danger-bg focus:ring-danger-text button-active-pop flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-danger-outline font-medium transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-danger-bg focus-visible:ring-danger-text button-active-pop flex items-center justify-center gap-2 disabled:opacity-60"
+                  title="Delete all task data (account and plan remain)"
                 >
                   {isProcessingDangerAction ? <LoadingSpinner className="w-5 h-5 text-danger-text" /> : <RefreshCwIcon className="w-5 h-5" />}
                   Reset My Account
@@ -325,7 +331,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
                 <button
                   onClick={() => setIsDeleteConfirmOpen(true)}
                   disabled={isProcessingDangerAction}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-danger-solid font-semibold transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-danger-bg focus:ring-red-300 button-active-pop button-hover-glow flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full sm:w-auto px-6 py-3 rounded-lg button-danger-solid font-semibold transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-danger-bg focus-visible:ring-red-300 button-active-pop button-hover-glow flex items-center justify-center gap-2 disabled:opacity-60"
+                  title="Permanently delete account and all data"
                 >
                   {isProcessingDangerAction ? <LoadingSpinner className="w-5 h-5" /> : <Trash2Icon className="w-5 h-5" />}
                   Delete My Account Permanently
@@ -338,7 +345,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({
       </main>
 
       <footer className="page-footer-area text-center py-6 text-text-muted text-sm">
-        <p>AI Task Ranker Settings ✨ Version {process.env.APP_VERSION || '1.0.1'}</p>
+        <p>AI Task Ranker Settings ✨ Version {APP_VERSION}</p>
       </footer>
 
       {isResetConfirmOpen && (

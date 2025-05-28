@@ -174,15 +174,16 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
           <div className="flex items-center gap-3">
             <button
                 onClick={onNavigateToSettings}
-                className="header-icon-button button-active-pop"
+                className="header-icon-button button-active-pop p-2 rounded-full hover:bg-surface-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
                 aria-label="Open application settings"
                 title="Settings"
             >
-                <CogIcon />
+                <CogIcon className="w-6 h-6 text-text-secondary hover:text-text-primary transition-colors" />
             </button>
             <button
                 onClick={onLogout}
                 className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white font-medium py-2.5 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out button-active-pop button-hover-glow flex items-center justify-center"
+                title="Sign out of your account"
             >
                 Sign Out
             </button>
@@ -219,6 +220,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
               <button
                 onClick={onNavigateToSubscription}
                 className="button-secondary bg-white/20 hover:bg-white/30 text-white border-white/50 font-semibold py-2.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out button-active-pop button-hover-glow flex items-center justify-center gap-2 flex-shrink-0"
+                title="Go to subscription plans"
               >
                 Upgrade Plan <ArrowRightIcon className="w-4 h-4" />
               </button>
@@ -259,7 +261,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         aria-label={`Select color: ${color.name}`}
                         aria-pressed={selectedColorValue === color.value}
                         onClick={() => setSelectedColorValue(color.value)}
-                        className={`w-8 h-8 rounded-md border-2 transition-all duration-150 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-input-bg
+                        className={`w-8 h-8 rounded-md border-2 transition-all duration-150 ease-in-out transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-input-bg
                                     ${selectedColorValue === color.value ? 'ring-2 ring-offset-2 ring-border-focus border-white shadow-lg scale-110' : 'border-transparent hover:border-slate-400'}`}
                         style={{ backgroundColor: color.value }}
                       />
@@ -277,7 +279,8 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
               <button
                 type="submit"
                 disabled={isCreatingList || !newListName.trim() || (currentUserTierDetails?.maxLists !== Infinity && taskLists.length >= currentUserTierDetails!.maxLists) }
-                className="w-full button-primary text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 button-active-pop button-hover-glow flex items-center justify-center gap-2"
+                className="w-full button-primary text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-opacity-75 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 button-active-pop button-hover-glow flex items-center justify-center gap-2"
+                title={ (currentUserTierDetails?.maxLists !== Infinity && taskLists.length >= currentUserTierDetails!.maxLists) ? `List limit reached for ${currentUserTierDetails.name} plan` : "Create new task list"}
               >
                 {isCreatingList ? <LoadingSpinner className="w-5 h-5" /> : <AddIcon className="w-5 h-5" />}
                 {isCreatingList ? 'Creating List...' : 'Create List'}
@@ -297,14 +300,15 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                   return (
                     <div
                       key={list.id}
-                      className="bg-surface-secondary backdrop-blur-sm shadow-xl rounded-xl overflow-hidden border border-border-secondary transition-all duration-300 ease-out hover:scale-[1.03] animate-list-card-enter hover-shadow-themed-glow"
+                      className="bg-surface-secondary backdrop-blur-sm shadow-xl rounded-xl overflow-hidden border border-border-secondary transition-all duration-300 ease-out hover:scale-[1.03] animate-list-card-enter hover-card-glow"
                       style={{ animationDelay: `${index * 0.05}s`, borderTop: `4px solid ${list.color || 'var(--color-text-accent)'}` }}
                       role="listitem"
                     >
                       <button 
                         onClick={() => onSelectList(list)} 
-                        className="block w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-border-focus rounded-t-lg"
+                        className="block w-full text-left p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus rounded-t-lg"
                         aria-label={`Open list: ${list.name}`}
+                        title={`Open list: ${list.name}`}
                       >
                         <div className="flex items-center gap-3 mb-3">
                            <ListIconComponent className="w-7 h-7 flex-shrink-0" style={{ color: list.color || 'var(--color-text-accent)' }}/>
@@ -320,8 +324,9 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                       <div className="bg-surface-subtle/50 p-3 border-t border-border-secondary">
                           <button
                             onClick={() => openDeleteConfirmation(list)}
-                            className="text-xs text-red-400 hover:text-red-300 hover:bg-red-500/20 px-3 py-1.5 rounded-md transition-colors duration-150 w-full text-center font-medium"
+                            className="text-xs text-red-400 hover:text-red-300 hover:bg-red-500/20 px-3 py-1.5 rounded-md transition-colors duration-150 w-full text-center font-medium focus:outline-none focus-visible:ring-1 focus-visible:ring-red-400 focus-visible:bg-red-500/20"
                             aria-label={`Delete list: ${list.name}`}
+                            title={`Delete list: ${list.name}`}
                           >
                             Delete List
                           </button>

@@ -1,18 +1,24 @@
 
 import React from 'react';
+import { isApiConfigured } from '../services/geminiService';
 import { AlertTriangleIcon } from './icons/AlertTriangleIcon';
 
-
 const ApiKeyWarningBanner: React.FC = () => {
+  if (isApiConfigured()) {
+    return null;
+  }
+
   return (
-    <div className="bg-gradient-to-r from-red-700 via-pink-800 to-purple-900/80 border border-red-600/70 text-white px-4 py-4 rounded-lg relative mb-8 shadow-2xl shadow-red-500/30" role="alert">
-      <div className="flex items-center">
-        <AlertTriangleIcon className="w-7 h-7 mr-4 text-yellow-300 flex-shrink-0" />
-        <div className="flex-grow">
-          <strong className="font-bold text-lg block mb-1">API Key Alert!</strong>
-          <span className="block text-sm opacity-90">The Gemini API key (process.env.API_KEY) is not configured. AI-powered task ranking will be disabled. Please ensure it's set up correctly.</span>
-        </div>
-      </div>
+    <div
+      className="fixed top-0 left-0 right-0 z-[1000] p-3 bg-danger-bg text-danger-text border-b border-danger-border shadow-lg flex items-center justify-center gap-3"
+      role="alert"
+    >
+      <AlertTriangleIcon className="w-6 h-6 flex-shrink-0" />
+      <p className="text-sm font-medium">
+        <strong>AI Features Disabled:</strong> The Gemini API Key is not configured.
+        Please ensure the <code>API_KEY</code> environment variable is set correctly during the build process or in your deployment settings.
+        AI-powered task ranking will not function until this is resolved.
+      </p>
     </div>
   );
 };

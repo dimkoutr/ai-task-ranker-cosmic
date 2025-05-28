@@ -1,4 +1,15 @@
 
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.1.0"
+  }
+}
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,6 +51,7 @@
       --color-border-primary: rgba(138, 43, 226, 0.5); /* Purple-500 with opacity */
       --color-border-secondary: rgba(100, 50, 180, 0.4);
       --color-border-focus: #8A2BE2; /* Solid purple for focus rings */
+      --color-border-focus-alt: #E55F9C; /* Alternative focus color (pinkish) */
 
       --color-button-primary-bg-from: #8A2BE2; /* Purple */
       --color-button-primary-bg-via: #D53F8C; /* Pink */
@@ -52,586 +64,495 @@
 
       --color-input-bg: rgba(20, 0, 50, 0.5);
       --color-input-text: var(--color-text-primary);
-      --color-input-placeholder: #7a7a9c;
-      --color-input-border: var(--color-border-primary);
-      --color-input-focus-shadow-1: rgba(213, 63, 140, 0.7); /* Brighter Pink */
-      --color-input-focus-shadow-2: rgba(138, 43, 226, 0.5); /* Brighter Purple */
+      --color-input-placeholder: rgba(176, 176, 224, 0.6); /* --color-text-secondary with opacity */
+      --color-input-border: rgba(138, 43, 226, 0.4); /* --color-border-primary with less opacity */
 
-      --color-scrollbar-track: rgba(255, 255, 255, 0.05);
-      --color-scrollbar-thumb-from: #8A2BE2;
-      --color-scrollbar-thumb-to: #4A00E0;
-      --color-scrollbar-thumb-hover-from: #9F40FF;
-      --color-scrollbar-thumb-hover-to: #5D0FFF;
-
-      --shadow-primary: 0 10px 15px -3px rgba(29, 11, 75, 0.3), 0 4px 6px -2px rgba(29, 11, 75, 0.2);
-      --shadow-secondary: 0 0 15px 2px rgba(213, 63, 140, 0.4), 0 0 20px 3px rgba(138, 43, 226, 0.3);
-      --shadow-interactive: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
-
-      --skeleton-base-color: var(--color-surface-subtle);
-      --skeleton-highlight-color: color-mix(in srgb, var(--color-surface-subtle) 70%, var(--color-text-muted) 30%);
+      --color-danger-bg: rgba(75, 0, 15, 0.7);
+      --color-danger-border: rgba(220, 38, 38, 0.6); /* red-600 */
+      --color-danger-text: #fecaca; /* red-200 */
       
-      /* Danger Zone Colors */
-      --color-danger-bg: rgba(220, 38, 38, 0.1); /* bg-red-600/10 */
-      --color-danger-border: rgba(220, 38, 38, 0.4); /* border-red-600/40 */
-      --color-danger-border-pulse: rgba(239, 68, 68, 0.7); /* border-red-500/70 for pulse */
-      --color-danger-text: #f87171; /* text-red-400 */
-      --color-danger-text-hover: #ef4444; /* text-red-500 */
-      --color-danger-button-solid-bg-from: #dc2626; /* red-600 */
-      --color-danger-button-solid-bg-to: #b91c1c; /* red-700 */
-      --color-danger-button-solid-text: #fee2e2; /* red-50 */
+      --color-button-danger-solid-bg-from: #E11D48; /* rose-600 */
+      --color-button-danger-solid-bg-to: #C00A34;   /* darker rose */
+      --color-button-danger-solid-text: #FFFFFF;
+      --color-button-danger-outline-bg: transparent;
+      --color-button-danger-outline-bg-hover: rgba(220, 38, 38, 0.15);
+      --color-button-danger-outline-text: var(--color-danger-text);
+      --color-button-danger-outline-border: var(--color-danger-border);
+
+      --color-scrollbar-thumb: var(--color-surface-interactive);
+      --color-scrollbar-thumb-hover: var(--color-text-accent);
+      --color-scrollbar-track: var(--color-bg-gradient-start);
+      
+      /* New for Subscription Plan Cards */
+      --color-plan-card-highlight-glow: rgba(250, 204, 21, 0.5); /* yellow-400 with opacity */
+      --color-plan-card-current-glow: rgba(168, 85, 247, 0.5); /* purple-500 with opacity */
+
+
+      /* General UI */
+      --shadow-primary: 0 4px 15px rgba(0,0,0,0.2);
+      --shadow-secondary: 0 8px 25px rgba(88, 44, 176, 0.3); /* Purpleish glow */
+      --shadow-interactive: 0 2px 8px rgba(213, 63, 140, 0.3); /* Pinkish glow */
     }
 
-    body.theme-starlight-serenity {
-      --color-bg-gradient-start: #0A192F; /* Deep Navy */
-      --color-bg-gradient-mid: #172A45; /* Dark Slate Blue */
-      --color-bg-gradient-end: #303C55; /* Greyish Blue */
+    /* Starlight Serenity Theme */
+    .theme-starlight-serenity {
+      --color-bg-gradient-start: #0B192E; /* Deep Space Blue */
+      --color-bg-gradient-mid: #132A4A; /* Starlight Navy */
+      --color-bg-gradient-end: #1D3C6E; /* Galactic Indigo */
       
-      --color-text-primary: #E6F1FF; /* Lightest Blue */
-      --color-text-secondary: #A8B2D1; /* Light Slate */
-      --color-text-muted: #8892B0; /* Medium Slate */
-      --color-text-accent: #64FFDA; /* Bright Aqua */
-      --color-text-accent-hover: #7AFEF5;
-      --color-text-gradient-from: #64FFDA; /* Aqua */
-      --color-text-gradient-via: #79CDFF; /* Sky Blue */
-      --color-text-gradient-to: #A8B2D1; /* Light Slate */
-      --color-text-gradient-sky-rose-lime-from: #64ffda;
-      --color-text-gradient-sky-rose-lime-via: #f77a99;
-      --color-text-gradient-sky-rose-lime-to: #bef264;
+      --color-text-primary: #E0F2FE; /* Light Sky Blue */
+      --color-text-secondary: #A8B2D1; /* Moonstone Grey */
+      --color-text-muted: #8291AD; /* Comet Dust */
+      --color-text-accent: #64FFDA; /* Aqua Sky */
+      --color-text-accent-hover: #8AFFF2;
+      --color-text-gradient-from: #64FFDA;
+      --color-text-gradient-via: #79CDFF;
+      --color-text-gradient-to: #A78BFA;
+      --color-text-gradient-sky-rose-lime-from: #79CDFF;
+      --color-text-gradient-sky-rose-lime-via: #A78BFA;
+      --color-text-gradient-sky-rose-lime-to: #64FFDA;
 
 
-      --color-surface-primary: rgba(10, 25, 47, 0.8); /* More opaque for primary surfaces */
-      --color-surface-secondary: rgba(23, 42, 69, 0.7);
-      --color-surface-subtle: rgba(48, 60, 85, 0.6);
-      --color-surface-interactive: rgba(30, 50, 75, 0.85);
-      --color-surface-interactive-hover: rgba(40, 60, 85, 0.9);
+      --color-surface-primary: rgba(20, 40, 70, 0.7); 
+      --color-surface-secondary: rgba(30, 50, 90, 0.6);
+      --color-surface-subtle: rgba(40, 60, 100, 0.5);
+      --color-surface-interactive: rgba(50, 70, 110, 0.8);
+      --color-surface-interactive-hover: rgba(60, 80, 120, 0.85);
+      
+      --color-border-primary: rgba(100, 255, 218, 0.5); /* Aqua Sky with opacity */
+      --color-border-secondary: rgba(121, 205, 255, 0.4); /* Celestial Blue with opacity */
+      --color-border-focus: #64FFDA; /* Aqua Sky solid */
 
-      --color-border-primary: rgba(100, 255, 218, 0.4); /* Aqua with opacity */
-      --color-border-secondary: rgba(136, 146, 176, 0.3);
-      --color-border-focus: #64FFDA; /* Solid Aqua for focus rings */
-
-      --color-button-primary-bg-from: #64FFDA; /* Aqua */
-      --color-button-primary-bg-via: #79CDFF; /* Sky Blue */
-      --color-button-primary-bg-to: #5F9EA0; /* Cadet Blue */
-      --color-button-primary-text: #0A192F; /* Dark Navy Text */
+      --color-button-primary-bg-from: #64FFDA; 
+      --color-button-primary-bg-via: #79CDFF; 
+      --color-button-primary-bg-to: #A78BFA; 
+      --color-button-primary-text: #0B192E; /* Dark text for light buttons */
 
       --color-button-secondary-bg: rgba(100, 120, 150, 0.2);
       --color-button-secondary-bg-hover: rgba(120, 140, 170, 0.3);
       --color-button-secondary-text: var(--color-text-primary);
 
-      --color-input-bg: rgba(10, 25, 47, 0.7);
+      --color-input-bg: rgba(30, 45, 75, 0.5);
       --color-input-text: var(--color-text-primary);
-      --color-input-placeholder: #8892B0;
-      --color-input-border: var(--color-border-primary);
-      --color-input-focus-shadow-1: rgba(100, 255, 218, 0.7); /* Brighter Aqua */
-      --color-input-focus-shadow-2: rgba(121, 205, 255, 0.5); /* Sky Blue for variation */
+      --color-input-placeholder: rgba(168, 178, 209, 0.6);
+      --color-input-border: rgba(100, 255, 218, 0.4);
+      
+      --color-danger-bg: rgba(75, 30, 45, 0.7);
+      --color-danger-border: rgba(255, 100, 120, 0.6); 
+      --color-danger-text: #fde0e0; 
 
-      --color-scrollbar-track: rgba(255, 255, 255, 0.08);
-      --color-scrollbar-thumb-from: #64FFDA;
-      --color-scrollbar-thumb-to: #79CDFF;
-      --color-scrollbar-thumb-hover-from: #7AFEF5;
-      --color-scrollbar-thumb-hover-to: #8BD7FF;
+      --color-button-danger-solid-bg-from: #FF647C; 
+      --color-button-danger-solid-bg-to: #E05060;   
+      --color-button-danger-solid-text: #FFFFFF;
+      --color-button-danger-outline-bg: transparent;
+      --color-button-danger-outline-bg-hover: rgba(255, 100, 120, 0.15);
+      --color-button-danger-outline-text: var(--color-danger-text);
+      --color-button-danger-outline-border: var(--color-danger-border);
 
-      --shadow-primary: 0 10px 15px -3px rgba(23, 42, 69, 0.3), 0 4px 6px -2px rgba(23, 42, 69, 0.2);
-      --shadow-secondary: 0 0 15px 2px rgba(100, 255, 218, 0.3), 0 0 20px 3px rgba(121, 205, 255, 0.2);
-      --shadow-interactive: 0 4px 14px 0 rgba(0,0,0,0.15);
+      --color-scrollbar-thumb: var(--color-surface-interactive);
+      --color-scrollbar-thumb-hover: var(--color-text-accent);
+      --color-scrollbar-track: var(--color-bg-gradient-start);
 
-      --skeleton-base-color: var(--color-surface-subtle);
-      --skeleton-highlight-color: color-mix(in srgb, var(--color-surface-subtle) 70%, var(--color-text-muted) 30%);
+      --color-plan-card-highlight-glow: rgba(100, 255, 218, 0.4); 
+      --color-plan-card-current-glow: rgba(121, 205, 255, 0.4);
     }
 
-    body.theme-golden-radiance {
-      --color-bg-gradient-start: #3D280A; /* Dark Brown */
-      --color-bg-gradient-mid: #845A1B; /* Rich Brown/Bronze */
-      --color-bg-gradient-end: #E6A01C; /* Golden Amber */
+    /* Golden Radiance Theme */
+    .theme-golden-radiance {
+      --color-bg-gradient-start: #2D1808; /* Deep Bronze */
+      --color-bg-gradient-mid: #4A2E0F; /* Rich Amber */
+      --color-bg-gradient-end: #6C4A1A; /* Warm Sienna */
       
-      --color-text-primary: #FFF8E1; /* Pale Yellow/Cream */
-      --color-text-secondary: #D4C098; /* Light Tan */
-      --color-text-muted: #A88C5B; /* Muted Brown */
-      --color-text-accent: #FFD700; /* Gold */
-      --color-text-accent-hover: #FFEA70; /* Lighter Gold */
+      --color-text-primary: #FFF0D9; /* Pale Gold */
+      --color-text-secondary: #E8C8A0; /* Soft Beige */
+      --color-text-muted: #B0987C; /* Dusty Sand */
+      --color-text-accent: #FFD700; /* Solar Gold */
+      --color-text-accent-hover: #FFDF33;
       --color-text-gradient-from: #FFD700;
-      --color-text-gradient-via: #FFA500; /* Orange */
-      --color-text-gradient-to: #FF8C00; /* Dark Orange */
-      --color-text-gradient-sky-rose-lime-from: #FFD700;
-      --color-text-gradient-sky-rose-lime-via: #FF8C00;
-      --color-text-gradient-sky-rose-lime-to: #FFA500;
+      --color-text-gradient-via: #FFA500;
+      --color-text-gradient-to: #E6A01C;
+      --color-text-gradient-sky-rose-lime-from: #FFA500;
+      --color-text-gradient-sky-rose-lime-via: #DC2626;
+      --color-text-gradient-sky-rose-lime-to: #E6A01C;
 
+      --color-surface-primary: rgba(74, 46, 15, 0.7); 
+      --color-surface-secondary: rgba(108, 74, 26, 0.6);
+      --color-surface-subtle: rgba(140, 100, 40, 0.5);
+      --color-surface-interactive: rgba(120, 85, 30, 0.8);
+      --color-surface-interactive-hover: rgba(135, 95, 35, 0.85);
+      
+      --color-border-primary: rgba(255, 215, 0, 0.5); /* Solar Gold with opacity */
+      --color-border-secondary: rgba(230, 160, 28, 0.4); /* Amber Glow with opacity */
+      --color-border-focus: #FFD700; /* Solar Gold solid */
 
-      --color-surface-primary: rgba(61, 40, 10, 0.85); 
-      --color-surface-secondary: rgba(132, 90, 27, 0.75);
-      --color-surface-subtle: rgba(230, 160, 28, 0.6);
-      --color-surface-interactive: rgba(100, 70, 20, 0.85);
-      --color-surface-interactive-hover: rgba(120, 85, 25, 0.9);
+      --color-button-primary-bg-from: #FFD700; 
+      --color-button-primary-bg-via: #FFA500; 
+      --color-button-primary-bg-to: #E6A01C; 
+      --color-button-primary-text: #2D1808; /* Dark text for light buttons */
 
-      --color-border-primary: rgba(255, 215, 0, 0.6); /* Gold with opacity */
-      --color-border-secondary: rgba(168, 140, 91, 0.5);
-      --color-border-focus: #FFD700; /* Solid Gold for focus rings */
-
-      --color-button-primary-bg-from: #FFB347; /* Light Orange/Gold */
-      --color-button-primary-bg-via: #FFD700; /* Gold */
-      --color-button-primary-bg-to: #FFA500; /* Orange */
-      --color-button-primary-text: #4A3B25; /* Dark Brown Text */
-
-      --color-button-secondary-bg: rgba(120, 90, 40, 0.25);
-      --color-button-secondary-bg-hover: rgba(140, 105, 50, 0.35);
+      --color-button-secondary-bg: rgba(150, 120, 90, 0.2);
+      --color-button-secondary-bg-hover: rgba(170, 140, 110, 0.3);
       --color-button-secondary-text: var(--color-text-primary);
 
-      --color-input-bg: rgba(70, 50, 15, 0.7);
+      --color-input-bg: rgba(70, 50, 30, 0.5);
       --color-input-text: var(--color-text-primary);
-      --color-input-placeholder: #A88C5B;
-      --color-input-border: var(--color-border-primary);
-      --color-input-focus-shadow-1: rgba(255, 215, 0, 0.7); /* Brighter Gold */
-      --color-input-focus-shadow-2: rgba(255, 165, 0, 0.5); /* Orange for variation */
+      --color-input-placeholder: rgba(232, 200, 160, 0.6);
+      --color-input-border: rgba(255, 215, 0, 0.4);
+      
+      --color-danger-bg: rgba(75, 20, 10, 0.7);
+      --color-danger-border: rgba(220, 50, 30, 0.6); 
+      --color-danger-text: #fee0d0; 
+      
+      --color-button-danger-solid-bg-from: #DC2626; 
+      --color-button-danger-solid-bg-to: #B01010;   
+      --color-button-danger-solid-text: #FFFFFF;
+      --color-button-danger-outline-bg: transparent;
+      --color-button-danger-outline-bg-hover: rgba(220, 50, 30, 0.15);
+      --color-button-danger-outline-text: var(--color-danger-text);
+      --color-button-danger-outline-border: var(--color-danger-border);
 
-      --color-scrollbar-track: rgba(255, 248, 225, 0.1); /* Light cream track */
-      --color-scrollbar-thumb-from: #FFD700;
-      --color-scrollbar-thumb-to: #E6A01C;
-      --color-scrollbar-thumb-hover-from: #FFEA70;
-      --color-scrollbar-thumb-hover-to: #FFC64A;
+      --color-scrollbar-thumb: var(--color-surface-interactive);
+      --color-scrollbar-thumb-hover: var(--color-text-accent);
+      --color-scrollbar-track: var(--color-bg-gradient-start);
 
-      --shadow-primary: 0 10px 15px -3px rgba(132, 90, 27, 0.3), 0 4px 6px -2px rgba(132, 90, 27, 0.2);
-      --shadow-secondary: 0 0 15px 2px rgba(255, 215, 0, 0.3), 0 0 20px 3px rgba(230, 160, 28, 0.2);
-      --shadow-interactive: 0 4px 14px 0 rgba(61, 40, 10, 0.2);
-
-      --skeleton-base-color: var(--color-surface-subtle);
-      --skeleton-highlight-color: color-mix(in srgb, var(--color-surface-subtle) 70%, var(--color-text-muted) 30%);
-    }
-
-    html {
-      scrollbar-width: thin;
-      scrollbar-color: var(--color-scrollbar-thumb-from) var(--color-scrollbar-track);
+      --color-plan-card-highlight-glow: rgba(255, 215, 0, 0.4); 
+      --color-plan-card-current-glow: rgba(230, 160, 28, 0.4);
     }
 
     body {
       font-family: var(--font-family-sans);
-      background-image: linear-gradient(135deg, var(--color-bg-gradient-start) 0%, var(--color-bg-gradient-mid) 50%, var(--color-bg-gradient-end) 100%);
+      background-color: var(--color-bg-gradient-start); /* Fallback */
+      background-image: linear-gradient(to bottom right, var(--color-bg-gradient-start), var(--color-bg-gradient-mid), var(--color-bg-gradient-end));
       color: var(--color-text-primary);
       margin: 0;
-      overflow: hidden;
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-    
-    #root {
+      padding: 0;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      transition: background 0.5s ease-out, color 0.5s ease-out;
+      overflow-x: hidden; /* Prevent horizontal scroll from animations */
     }
 
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 10px;
       height: 10px;
     }
     ::-webkit-scrollbar-track {
       background: var(--color-scrollbar-track);
-      border-radius: 10px;
+      border-radius: 5px;
     }
     ::-webkit-scrollbar-thumb {
-      background: linear-gradient(45deg, var(--color-scrollbar-thumb-from), var(--color-scrollbar-thumb-to));
-      border-radius: 10px;
-      border: 2px solid transparent;
-      background-clip: content-box;
+      background: var(--color-scrollbar-thumb);
+      border-radius: 5px;
+      border: 2px solid var(--color-scrollbar-track); /* Creates padding around thumb */
+      transition: background-color 0.2s ease-in-out;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(45deg, var(--color-scrollbar-thumb-hover-from), var(--color-scrollbar-thumb-hover-to));
+      background: var(--color-scrollbar-thumb-hover);
+    }
+     /* For Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
     }
 
-    @keyframes taskEnter {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .animate-task-enter { animation: taskEnter 0.5s ease-out forwards; }
-
-    @keyframes taskExit {
-      from { opacity: 1; transform: scale(1) translateX(0); max-height: 200px; margin-bottom: 1rem; padding: 1.25rem; }
-      to { opacity: 0; transform: scale(0.9) translateX(-20px); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; overflow: hidden; }
-    }
-    .animate-task-exit { animation: taskExit 0.4s ease-in forwards; }
-    
-    @keyframes sparklesPulse {
-      0%, 100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.15); opacity: 1; }
-    }
-    .animate-sparkles-pulse { animation: sparklesPulse 2s infinite ease-in-out; }
-
-    @keyframes buttonPop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
-    }
-    .button-active-pop:active:not(:disabled) { animation: buttonPop 0.2s ease-out; }
-
-    .text-gradient-purple-pink-sky {
-      background: linear-gradient(45deg, var(--color-text-gradient-from), var(--color-text-gradient-via), var(--color-text-gradient-to));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
-    }
-     .text-gradient-sky-rose-lime {
-      background: linear-gradient(to right, var(--color-text-gradient-sky-rose-lime-from), var(--color-text-gradient-sky-rose-lime-via), var(--color-text-gradient-sky-rose-lime-to));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
-    }
-
-    .input-focus-glow:focus {
-      box-shadow: 0 0 15px 2px var(--color-input-focus-shadow-1), 0 0 25px 5px var(--color-input-focus-shadow-2);
-      border-color: var(--color-border-focus);
-    }
-    
-    .button-hover-glow:hover:not(:disabled) {
-       box-shadow: var(--shadow-secondary);
-    }
-
-    .page-transition-container { 
-      position: relative; 
-      width: 100%; 
-      flex-grow: 1;
-      display: flex; 
-      overflow: hidden; 
-    }
-    .page { 
-      width: 100%; 
-      height: 100%; 
-      position: absolute; 
-      top: 0; 
-      left: 0; 
-      display: flex; 
-      flex-direction: column;
-      background-color: transparent; 
-      -webkit-overflow-scrolling: touch; 
-    }
-
-    .page-container-flex { 
+    /* Page structure */
+    .page-container-flex {
       display: flex;
       flex-direction: column;
-      width: 100%;
-      height: 100%; 
-      background-color: transparent; 
+      min-height: 100vh;
+      background-color: var(--color-bg-gradient-start); 
+      background-image: linear-gradient(to bottom right, var(--color-bg-gradient-start), var(--color-bg-gradient-mid), var(--color-bg-gradient-end));
     }
-
     .page-header-area {
-      flex-shrink: 0; 
+      flex-shrink: 0; /* Header doesn't shrink */
+      /* Removed: position: sticky; top: 0; z-index: 50; */
+      background: linear-gradient(to bottom, 
+        rgba(var(--color-bg-gradient-mid-rgb, 29, 11, 75), 0.95) 0%, 
+        rgba(var(--color-bg-gradient-mid-rgb, 29, 11, 75), 0.85) 70%, 
+        transparent 100%);
+      padding-bottom: 1rem; /* Add padding for fade effect */
     }
-
     .page-content-scrollable {
-      flex-grow: 1; 
-      overflow-y: auto; 
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch; 
+      flex-grow: 1; /* Content area takes remaining space */
+      overflow-y: auto; /* Allows content to scroll */
     }
-    
     .page-footer-area {
-      flex-shrink: 0; 
-    }
-
-
-    @keyframes pageEnterFromRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
-    .animate-page-enter-from-right { animation: pageEnterFromRight 0.4s ease-out forwards; }
-    @keyframes pageExitToLeft { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-50px); } }
-    .animate-page-exit-to-left { animation: pageExitToLeft 0.4s ease-out forwards; }
-    @keyframes pageEnterFromLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
-    .animate-page-enter-from-left { animation: pageEnterFromLeft 0.4s ease-out forwards; }
-    @keyframes pageExitToRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(50px); } }
-    .animate-page-exit-to-right { animation: pageExitToRight 0.4s ease-out forwards; }
-    @keyframes initialPageFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .animate-initial-page-fade-in { animation: initialPageFadeIn 0.5s ease-out forwards; }
-
-    @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .animate-modal-fade-in { animation: modalFadeIn 0.3s ease-out forwards; }
-    @keyframes modalFadeOut { from { opacity: 1; } to { opacity: 0; } }
-    .animate-modal-fade-out { animation: modalFadeOut 0.3s ease-in forwards; }
-    @keyframes modalScaleUp { from { transform: scale(0.95) translateY(10px); } to { transform: scale(1) translateY(0); } }
-    .animate-modal-scale-up { animation: modalScaleUp 0.3s ease-out forwards; }
-    @keyframes modalScaleDown { from { transform: scale(1) translateY(0); } to { transform: scale(0.95) translateY(10px); } }
-    .animate-modal-scale-down { animation: modalScaleDown 0.3s ease-in forwards; }
-
-    @keyframes modalPulseBorderGlow {
-      0%, 100% {
-        border-color: var(--color-border-secondary);
-        box-shadow: 0 0 15px -2px color-mix(in srgb, var(--color-border-focus) 40%, transparent),
-                    var(--shadow-primary); 
-      }
-      50% {
-        border-color: var(--color-border-focus);
-        box-shadow: 0 0 25px 2px color-mix(in srgb, var(--color-border-focus) 60%, transparent),
-                    0 0 10px 0px var(--color-text-accent), 
-                    var(--shadow-primary); 
-      }
-    }
-    .animate-modal-pulse-border-glow {
-      animation: modalPulseBorderGlow 3s infinite ease-in-out;
-    }
-
-    @keyframes listCardEnter { from { opacity: 0; transform: translateY(15px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .animate-list-card-enter { animation: listCardEnter 0.4s ease-out forwards; }
-
-    .header-icon-button {
-      padding: 0.6rem; 
-      border-radius: 9999px; 
-      background-color: var(--color-surface-interactive);
-      color: var(--color-text-primary);
-      transition: background-color 0.2s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.2s ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .header-icon-button:hover {
-      background-color: var(--color-surface-interactive-hover);
-      box-shadow: var(--shadow-interactive);
-      transform: translateY(-1px);
-    }
-    .header-icon-button:active {
-      transform: scale(0.92) translateY(0px);
-    }
-    .header-icon-button svg {
-      width: 1.375rem; 
-      height: 1.375rem; 
+      flex-shrink: 0; /* Footer doesn't shrink */
+      background-color: var(--color-bg-gradient-end); 
     }
     
-    .button-primary, .button-secondary {
-      position: relative; 
-      overflow: hidden;  
-    }
+    /* Button Styles */
     .button-primary {
       background-image: linear-gradient(to right, var(--color-button-primary-bg-from), var(--color-button-primary-bg-via), var(--color-button-primary-bg-to));
-      color: var(--color-button-primary-text);
+      background-size: 200% auto;
+      transition: background-position 0.5s ease, box-shadow 0.3s ease, transform 0.2s ease;
     }
-    .button-primary:hover:not(:disabled) {
-       background-image: linear-gradient(to right, color-mix(in srgb, var(--color-button-primary-bg-from) 90%, black), color-mix(in srgb, var(--color-button-primary-bg-via) 90%, black), color-mix(in srgb, var(--color-button-primary-bg-to) 90%, black));
+    .button-primary:hover {
+      background-position: right center; /* change the direction of the change here */
     }
     .button-secondary {
       background-color: var(--color-button-secondary-bg);
       color: var(--color-button-secondary-text);
       border: 1px solid var(--color-border-secondary);
     }
-    .button-secondary:hover:not(:disabled) {
+    .button-secondary:hover {
       background-color: var(--color-button-secondary-bg-hover);
+      border-color: var(--color-border-primary);
+    }
+    .button-danger-solid {
+      background-image: linear-gradient(to right, var(--color-button-danger-solid-bg-from), var(--color-button-danger-solid-bg-to));
+      color: var(--color-button-danger-solid-text);
+      background-size: 150% auto;
+      transition: background-position 0.4s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    }
+    .button-danger-solid:hover {
+      background-position: right center;
+    }
+    .button-danger-outline {
+      background-color: var(--color-button-danger-outline-bg);
+      color: var(--color-button-danger-outline-text);
+      border: 1px solid var(--color-button-danger-outline-border);
+    }
+    .button-danger-outline:hover {
+      background-color: var(--color-button-danger-outline-bg-hover);
+    }
+
+    /* Interactive Element Effects */
+    .button-active-pop:active {
+      transform: scale(0.97);
+    }
+    .button-hover-glow:hover:not(:disabled) {
+       box-shadow: 0 0 15px 0px var(--color-text-accent-hover);
+    }
+    .input-focus-glow:focus {
+        box-shadow: 0 0 15px -2px var(--color-border-focus) !important;
+        border-color: var(--color-border-focus) !important;
+    }
+
+    /* General Card Glow on Hover */
+    .hover-card-glow:hover:not(:disabled) {
+      box-shadow: 0 0 20px -5px var(--color-border-focus);
+      border-color: var(--color-border-focus) !important; /* Ensure border color changes */
     }
     
-    @keyframes buttonShine {
-      0% { transform: translateX(-110%) skewX(-25deg); } 
-      100% { transform: translateX(110%) skewX(-25deg); } 
+    /* Themed card hover glow for dashboard list cards */
+    .hover-shadow-themed-glow:hover {
+        box-shadow: 0 6px 20px -2px var(--color-border-focus), 0 0 0 1px var(--color-border-focus) inset;
     }
-    .button-primary::after, .button-secondary::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0; 
-      width: 30%; 
-      height: 100%;
-      background: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.25) 50%, 
-        rgba(255, 255, 255, 0) 100%
-      );
-      transform: translateX(-110%) skewX(-25deg); 
-      z-index: 1;
-      transition: transform 0.6s ease; 
-      pointer-events: none; 
+
+    /* Gradients */
+    .text-gradient-purple-pink-sky {
+        background-image: linear-gradient(to right, var(--color-text-gradient-via), var(--color-text-gradient-from), var(--color-text-gradient-to));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
     }
-    .button-primary:hover:not(:disabled)::after, 
-    .button-secondary:hover:not(:disabled)::after {
-      animation: buttonShine 0.75s ease-out 1; 
-       transform: translateX(250%) skewX(-25deg); 
+    .text-gradient-sky-rose-lime {
+      background-image: linear-gradient(to right, var(--color-text-gradient-sky-rose-lime-from), var(--color-text-gradient-sky-rose-lime-via), var(--color-text-gradient-sky-rose-lime-to));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Pulsing border for Auth card */
+    .auth-card-pulsing {
+      animation: pulse-border-auth 3s infinite ease-in-out;
+      border: 1px solid var(--color-border-secondary);
+    }
+    @keyframes pulse-border-auth {
+      0%, 100% { border-color: var(--color-border-secondary); box-shadow: 0 0 10px -2px var(--color-border-secondary); }
+      50% { border-color: var(--color-border-focus); box-shadow: 0 0 20px 0px var(--color-border-focus); }
+    }
+
+    /* Modal pulsed border */
+    .animate-modal-pulse-border-glow {
+        animation: pulse-border-modal 2.5s infinite ease-in-out;
+    }
+    @keyframes pulse-border-modal {
+        0%, 100% { border-color: var(--color-border-secondary); box-shadow: 0 0 15px -5px var(--color-border-secondary); }
+        50% { border-color: var(--color-border-focus); box-shadow: 0 0 25px -3px var(--color-border-focus); }
+    }
+
+
+    /* Animations */
+    .page-transition-container {
+      position: relative;
+      width: 100%;
+      min-height: 100vh; /* Ensure it covers viewport */
+      perspective: 1200px; /* For 3D-like transitions */
+    }
+    .page {
+      position: absolute; /* All pages are absolute for smooth transitions */
+      width: 100%;
+      height: 100%; /* Ensure page takes full height */
+      backface-visibility: hidden; /* Optimize rendering for transforms */
+    }
+
+    @keyframes initialPageFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-initial-page-fade-in { animation: initialPageFadeIn 0.6s ease-out forwards; }
+
+    @keyframes pageEnterFromRight {
+      from { opacity: 0; transform: translateX(50px) rotateY(-15deg) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) rotateY(0deg) scale(1); }
+    }
+    .animate-page-enter-from-right { animation: pageEnterFromRight 0.5s ease-out forwards; }
+
+    @keyframes pageEnterFromLeft {
+      from { opacity: 0; transform: translateX(-50px) rotateY(15deg) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) rotateY(0deg) scale(1); }
+    }
+    .animate-page-enter-from-left { animation: pageEnterFromLeft 0.5s ease-out forwards; }
+    
+    @keyframes shakeError {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+      20%, 40%, 60%, 80% { transform: translateX(6px); }
+    }
+    .animate-shake-error { animation: shakeError 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+
+    @keyframes toastEnter {
+      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-toast-enter { animation: toastEnter 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
+
+    @keyframes toastExit {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    }
+    .animate-toast-exit { animation: toastExit 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
+
+    @keyframes sparklesPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+    .animate-sparkles-pulse { animation: sparklesPulse 1.8s infinite ease-in-out; }
+
+    @keyframes taskEnter {
+        from { opacity: 0; transform: translateX(-20px) scale(0.95); }
+        to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    .animate-task-enter { animation: taskEnter 0.4s ease-out forwards; }
+
+    @keyframes taskExit {
+        from { opacity: 1; transform: translateX(0) scale(1); }
+        to { opacity: 0; transform: translateX(20px) scale(0.95); }
+    }
+    .animate-task-exit { animation: taskExit 0.4s ease-in forwards; }
+    
+    .skeleton-placeholder {
+      background-color: rgba(128, 128, 160, 0.25); /* text-muted with more opacity */
+      border-radius: 0.25rem;
+      animation: pulse-bg 1.8s infinite ease-in-out;
+    }
+    @keyframes pulse-bg {
+      0%, 100% { background-color: rgba(128, 128, 160, 0.25); }
+      50% { background-color: rgba(128, 128, 160, 0.35); }
+    }
+    .animate-pulse-task-item-bg { /* More subtle pulse for task item background when loading */
+        animation: pulse-task-item-bg-anim 2s infinite ease-in-out;
+    }
+    @keyframes pulse-task-item-bg-anim {
+      0%, 100% { background-color: var(--color-surface-secondary); }
+      50% { background-color: var(--color-surface-interactive); }
+    }
+    .animate-text-pulse-enhanced {
+        animation: textPulseEnhanced 1.8s infinite ease-in-out;
+    }
+    @keyframes textPulseEnhanced {
+        0%, 100% { opacity: 0.85; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.02); }
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-modal-fade-in { animation: modalFadeIn 0.3s ease-out forwards; }
+
+    @keyframes modalScaleUp {
+      from { opacity: 0.8; transform: scale(0.92) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-modal-scale-up { animation: modalScaleUp 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+    .animate-list-card-enter {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+        animation: listCardEnterAnim 0.5s ease-out forwards;
+    }
+    @keyframes listCardEnterAnim {
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    .bg-danger-bg { background-color: var(--color-danger-bg); }
+    .border-danger-border { border-color: var(--color-danger-border); }
+    .text-danger-text { color: var(--color-danger-text); }
+    @keyframes pulseDangerZoneBorder {
+      0%, 100% { border-color: var(--color-danger-border); box-shadow: 0 0 10px -3px var(--color-danger-border); }
+      50% { border-color: #ff3030; box-shadow: 0 0 20px 0px #ff3030; } /* Brighter red for pulse */
+    }
+    .animate-pulse-danger-zone-border {
+      animation: pulseDangerZoneBorder 2.5s infinite ease-in-out;
     }
 
     .theme-select-button {
       border: 2px solid transparent;
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .theme-select-button:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
     .theme-select-button.active {
-      border-color: var(--color-text-accent);
+      border-color: var(--color-border-focus);
+      box-shadow: 0 0 15px 0px var(--color-border-focus);
       transform: scale(1.05);
-      box-shadow: 0 0 10px var(--color-text-accent);
     }
-    .theme-select-button:hover:not(.active) {
-       border-color: var(--color-border-secondary);
+    .text-shadow-sm {
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
-    
-    @keyframes authCardPulseGlow {
-      0%, 100% { 
-        box-shadow: 0 0 20px 2px var(--color-input-focus-shadow-1), 0 0 30px 5px var(--color-input-focus-shadow-2), 0 0 8px 1px var(--color-border-focus);
-        border-color: color-mix(in srgb, var(--color-border-focus) 60%, transparent);
-      }
-      50% { 
-        box-shadow: 0 0 30px 5px var(--color-input-focus-shadow-1), 0 0 45px 10px var(--color-input-focus-shadow-2), 0 0 15px 3px var(--color-border-focus);
-        border-color: var(--color-border-focus);
-      }
+    .animate-pulse-slow { /* A slower, more ambient pulse for containers */
+        animation: pulse-slow-anim 2.5s infinite ease-in-out;
     }
-    .auth-card-pulsing {
-      animation: authCardPulseGlow 3.5s infinite ease-in-out;
-      border-width: 1px; 
-    }
-
-    @keyframes fadeInUp { 
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fadeInUp { 
-      animation: fadeInUp 0.5s ease-out forwards; 
-      opacity: 0; 
+    @keyframes pulse-slow-anim {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.9; }
     }
     
-    @keyframes slideInDownConfirm {
-      from { opacity: 0; transform: translateY(-15px); max-height: 0; padding-top:0; padding-bottom:0; margin-top:0; margin-bottom:0; }
-      to { opacity: 1; transform: translateY(0); max-height: 120px; 
-           padding-top: initial; padding-bottom: initial; margin-top: initial; margin-bottom: initial; 
-      }
+    /* Subscription Plan Card Highlighting */
+    .plan-card-highlighted-popular {
+      animation: pulse-highlighted-plan 2.2s infinite ease-in-out;
+      box-shadow: 0 0 20px 0 var(--color-plan-card-highlight-glow), 0 0 0 2px var(--color-plan-card-highlight-glow) inset;
+      border-color: var(--color-plan-card-highlight-glow) !important;
     }
-    .animate-slideInDownConfirm { 
-      animation: slideInDownConfirm 0.4s ease-out forwards; 
-      overflow: hidden; 
+    @keyframes pulse-highlighted-plan {
+      0%, 100% { box-shadow: 0 0 20px 0 var(--color-plan-card-highlight-glow), 0 0 0 2px var(--color-plan-card-highlight-glow) inset; transform: scale(1); }
+      50% { box-shadow: 0 0 30px 5px var(--color-plan-card-highlight-glow), 0 0 0 3px var(--color-plan-card-highlight-glow) inset; transform: scale(1.01); }
     }
-    
-    @keyframes shakeError {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-7px); }
-      20%, 40%, 60%, 80% { transform: translateX(7px); }
-    }
-    .animate-shake-error {
-      animation: shakeError 0.5s ease-in-out;
+    .plan-card-current {
+        border-color: var(--color-text-accent) !important;
+        box-shadow: 0 0 15px -3px var(--color-plan-card-current-glow), 0 0 0 1px var(--color-plan-card-current-glow) inset;
     }
 
-    @keyframes pulseTaskItemBackground {
-      0%, 100% { background-color: var(--color-surface-secondary); }
-      50% { background-color: color-mix(in srgb, var(--color-surface-secondary) 85%, var(--color-surface-interactive) 15%); }
-    }
-    .animate-pulse-task-item-bg {
-      animation: pulseTaskItemBackground 2.2s infinite ease-in-out;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -1000px 0; }
-      100% { background-position: 1000px 0; }
-    }
-    .skeleton-placeholder {
-      background-color: var(--skeleton-base-color);
-      background-image: linear-gradient(to right, 
-        var(--skeleton-base-color) 0%, 
-        var(--skeleton-highlight-color) 20%, 
-        var(--skeleton-highlight-color) 40%, 
-        var(--skeleton-base-color) 100%);
-      background-repeat: no-repeat;
-      background-size: 2000px 100%; 
-      animation: shimmer 2.2s linear infinite;
-      border-radius: 0.375rem; 
-    }
-    
-    @keyframes textPulseEnhanced {
-      0%, 100% { opacity: 0.85; letter-spacing: 0.025em; }
-      50% { opacity: 1; letter-spacing: 0.05em; }
-    }
-    .animate-text-pulse-enhanced {
-      animation: textPulseEnhanced 2.5s infinite ease-in-out;
-    }
-    
-    @keyframes toastEnterTop {
-      from { opacity: 0; transform: translateY(-100%); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-toast-enter { animation: toastEnterTop 0.4s ease-out forwards; }
-
-    @keyframes toastExitTop {
-      from { opacity: 1; transform: translateY(0); }
-      to { opacity: 0; transform: translateY(-100%); }
-    }
-    .animate-toast-exit { animation: toastExitTop 0.4s ease-in forwards; }
-
-    .hover-shadow-themed-glow:hover {
-      box-shadow: var(--shadow-secondary);
-    }
-
-    @keyframes pulseDangerZoneBorder {
-      0%, 100% { border-color: var(--color-danger-border); box-shadow: 0 0 10px 0px color-mix(in srgb, var(--color-danger-border) 50%, transparent); }
-      50% { border-color: var(--color-danger-border-pulse); box-shadow: 0 0 18px 2px color-mix(in srgb, var(--color-danger-border-pulse) 70%, transparent); }
-    }
-    .animate-pulse-danger-zone-border {
-      animation: pulseDangerZoneBorder 2.8s infinite ease-in-out;
-    }
-
-    .button-danger-outline {
-      background-color: transparent;
-      border: 1px solid var(--color-danger-border);
-      color: var(--color-danger-text);
-    }
-    .button-danger-outline:hover:not(:disabled) {
-      background-color: var(--color-danger-bg);
-      border-color: var(--color-danger-text-hover);
-      color: var(--color-danger-text-hover);
-      box-shadow: 0 0 8px 0px var(--color-danger-text-hover);
-    }
-    .button-danger-solid {
-      background-image: linear-gradient(to right, var(--color-danger-button-solid-bg-from), var(--color-danger-button-solid-bg-to));
-      color: var(--color-danger-button-solid-text);
-      border: 1px solid var(--color-danger-border);
-    }
-    .button-danger-solid:hover:not(:disabled) {
-       background-image: linear-gradient(to right, color-mix(in srgb, var(--color-danger-button-solid-bg-from) 90%, black), color-mix(in srgb, var(--color-danger-button-solid-bg-to) 90%, black));
-       border-color: var(--color-danger-text-hover);
-       box-shadow: 0 0 10px 0px var(--color-danger-text-hover);
-    }
-
-    /* Subscription Page Plan Card Highlight Animation */
-    @keyframes planCardHighlightPulse {
-      0%, 100% { box-shadow: 0 0 20px -2px var(--color-text-accent), 0 0 30px 2px var(--color-border-focus); }
-      50% { box-shadow: 0 0 30px 2px var(--color-text-accent), 0 0 40px 5px var(--color-border-focus); }
-    }
-    .animate-plan-card-highlight {
-      animation: planCardHighlightPulse 2.5s infinite ease-in-out;
-    }
-
-
-    .bg-slate-700\/50 { background-color: var(--color-surface-interactive); } 
-    .bg-slate-700\/60 { background-color: var(--color-surface-secondary); }
-    .bg-slate-800\/70 { background-color: var(--color-surface-primary); }
-    .text-slate-100 { color: var(--color-text-primary); }
-    .text-slate-300 { color: var(--color-text-primary); } 
-    .text-slate-400 { color: var(--color-text-secondary); }
-    .text-slate-500 { color: var(--color-text-muted); }
-    .placeholder-slate-500::placeholder { color: var(--color-input-placeholder); }
-
-    .border-purple-500\/50 { border-color: var(--color-border-primary); }
-    .border-purple-500\/60 { border-color: var(--color-border-primary); }
-    .border-slate-600\/50 { border-color: var(--color-border-secondary); }
-    .border-slate-700 { border-color: var(--color-border-secondary); }
-    .border-slate-700\/50 { border-color: var(--color-border-secondary); }
-    .border-slate-700\/60 { border-color: var(--color-border-secondary); }
-    
-    .focus\:ring-purple-400:focus {
-      --tw-ring-color: var(--color-border-focus);
-      box-shadow: 0 0 0 2px var(--color-border-focus); 
-    }
-     .focus\:border-purple-400:focus { border-color: var(--color-border-focus); }
-
-    .text-purple-300 { color: var(--color-text-accent); } 
-    .hover\:text-purple-100:hover { color: var(--color-text-accent-hover); }
-
-    .shadow-xl { box-shadow: var(--shadow-primary); }
-    .shadow-2xl { box-shadow: var(--shadow-primary); } 
-    .shadow-indigo-500\/40 {}
-    .shadow-indigo-500\/30 {}
-
-    .bg-slate-800 { background-color: var(--color-surface-primary); } 
 
   </style>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.1.0/",
-    "react": "https://esm.sh/react@^19.1.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.1.0"
-  }
-}
-</script>
 </head>
-<body class="antialiased">
-  <div id="root"></div>
-  <script type="module" src="/index.js"></script>
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root" class="h-full"></div>
+  <script type="module" src="index.js"></script>
 </body>
-</html>
-<link rel="stylesheet" href="index.css">
+</html><link rel="stylesheet" href="index.css">
 <script src="index.tsx" type="module"></script>

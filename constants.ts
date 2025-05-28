@@ -6,16 +6,17 @@ export const AI_MODEL_NAME = 'gemini-2.5-flash-preview-04-17';
 export const AI_PROMPT_TEMPLATE = `
 You are an AI assistant that ranks a list of tasks by importance relative to each other.
 The user will provide a JSON array of tasks, where each task object has an "id", "text", and optionally a "dueDate" (in "YYYY-MM-DD" ISO format, e.g., "2024-12-31"). A null "dueDate" means no specific due date is set.
-The order of tasks in this input array ({TASKS_JSON_ARRAY}) reflects the user's current preferred arrangement.
+The order of tasks in this input array ({TASKS_JSON_ARRAY}) is CRITICALLY IMPORTANT as it reflects the user's EXPLICIT and CURRENT preferred arrangement, especially after any manual re-ordering by the user.
 
 Your job is to:
-1. Evaluate all tasks provided based on their content and "dueDate".
+1. Evaluate all tasks provided based on their content, "dueDate", AND THEIR EXACT POSITION IN THE PROVIDED ARRAY.
 2. Assign a numerical rank to each task from 1 (MOST important) to N (LEAST important, where N is the total number of tasks in the list). Each rank in this range must be used exactly once.
-3. Your primary goal for ranking is to respect the user's provided order in the input array, but due dates are a CRITICAL factor.
-   - Tasks with earlier due dates, especially those that are past due or due very soon (e.g., today, tomorrow), should generally be ranked higher.
-   - If two tasks have similar urgency based on their due dates (or lack thereof), then the user's provided order should be the deciding factor for their relative importance.
-   - A task with a significantly later due date or no due date might still be ranked high if its textual content implies extreme, overriding urgency (e.g., "Emergency: Fix critical server outage").
-   - Conversely, a task with an early due date might be ranked slightly lower if its text indicates very low impact, but generally, the due date takes precedence.
+3. Ranking Logic (Current Date is {CURRENT_DATE_YYYY_MM_DD}):
+   - The user's order in the input array ({TASKS_JSON_ARRAY}) is the MOST CRITICAL signal of importance. This order reflects the user's explicit and immediate preference. YOUR PRIMARY GOAL IS TO MAINTAIN THIS USER-DEFINED ORDER as closely as humanly possible.
+   - Exception for Urgency: Tasks that are PAST DUE or DUE TODAY (relative to the current date {CURRENT_DATE_YYYY_MM_DD}) are critical. These tasks should be ranked very highly (e.g., 1, 2, 3...). If such a task appears lower in the user's list, you may elevate its rank above other non-critically-due tasks that the user placed higher.
+   - Prioritize User Order for Non-Critical Tasks: For all tasks that are NOT past due or due today (i.e., tasks with future due dates or no due dates), their relative rank MUST strictly follow the user's provided order. If task A is before task B in the input array, and neither is past due/due today, task A MUST receive a better (lower numerical) rank than task B.
+   - Relative Order of Critical Tasks: If multiple tasks are past due or due today, their relative order among themselves should also follow the user's provided input order as much as possible. For example, if the user lists PastDueTaskX before PastDueTaskY, PastDueTaskX should generally be ranked higher than PastDueTaskY.
+   - Minimal Perturbation: Your ranking should perturb the user's desired order ONLY for the critical due date exceptions mentioned above. The objective is to refine the list by highlighting genuinely urgent items while respecting the user's explicit structure for everything else.
 4. Provide a very brief justification (max 15 words) for each task's rank.
    - The \`justification\` MUST be a valid JSON string. This is CRITICALLY IMPORTANT.
    - If your justification text includes a double quote character ("), you MUST escape it as \\\\".
@@ -30,12 +31,12 @@ Respond ONLY with a JSON array of objects. Each object in the array must corresp
 - "rank": The numerical rank you assigned (integer, from 1 to N).
 - "justification": Your brief justification (string, max 15 words, potentially including emojis, and correctly escaped as per the rules above).
 
-Example of your expected output format:
+Example of your expected output format (assuming current date allows for 'Due very soon!' or 'Due today'):
 [
-  {"id": "id_A", "rank": 1, "justification": "🚨 Due very soon! Top priority."},
-  {"id": "id_B", "rank": 3, "justification": "🗓️ Important, but no urgent due date."},
-  {"id": "id_C", "rank": 2, "justification": "💡 Use \\\\"new\\\\" method for research."},
-  {"id": "id_D", "rank": 1, "justification": "⏰ Past Due! Urgent booking at C:\\\\\\\\Docs."}
+  {"id": "id_A", "rank": 1, "justification": "User placed first; 🚨 Due very soon!"},
+  {"id": "id_C", "rank": 2, "justification": "Critical: Due today; User order maintained."},
+  {"id": "id_B", "rank": 3, "justification": "User order; important, no urgent due date."},
+  {"id": "id_D", "rank": 4, "justification": "User order; Past Due at C:\\\\\\\\Docs."}
 ]
 
 Do not include any text, explanations, or markdown (like \`\`\`json) outside of this JSON array. Your entire response should be directly parsable as a JSON array.

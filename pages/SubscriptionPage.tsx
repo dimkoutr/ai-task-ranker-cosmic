@@ -38,14 +38,24 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({
   
   const PlanCard: React.FC<{ plan: TierDetails; isCurrent: boolean; onSelect: () => void; isLoadingThis: boolean }> = ({ plan, isCurrent, onSelect, isLoadingThis }) => {
     const cardBase = "bg-surface-primary backdrop-blur-md rounded-2xl p-6 md:p-8 border transition-all duration-300 ease-in-out transform hover:scale-[1.02]";
-    const currentPlanBorder = "border-purple-400 shadow-[0_0_25px_-5px_var(--color-text-accent)]";
-    const defaultBorder = "border-border-secondary hover:border-purple-500/70 hover:shadow-secondary";
-    const highlightStyle = plan.highlight ? "ring-2 ring-offset-2 ring-offset-surface-primary ring-yellow-400 shadow-yellow-500/40" : "";
+    let dynamicCardClasses = "border-border-secondary hover:border-purple-500/70 hover:shadow-secondary";
+
+    if (isCurrent) {
+      dynamicCardClasses = "plan-card-current"; // Uses CSS variable for glow and border
+    }
+    if (plan.highlight) {
+      // Highlighted populaire plan gets a more prominent animated glow
+      dynamicCardClasses += " plan-card-highlighted-popular";
+    } else if (isCurrent && !plan.highlight) {
+      // If it's current but not the "popular" one, still give it a clear distinction
+      dynamicCardClasses = "plan-card-current"; // Ensures current plan has its distinct style
+    }
+
 
     return (
-      <div className={`${cardBase} ${isCurrent ? currentPlanBorder : defaultBorder} ${highlightStyle} relative overflow-hidden flex flex-col animate-fadeInUp`}>
+      <div className={`${cardBase} ${dynamicCardClasses} relative overflow-hidden flex flex-col animate-fadeInUp`}>
         {plan.highlight && (
-          <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md">
+          <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-bl-lg shadow-md z-10">
             {plan.highlight}
           </div>
         )}
@@ -74,9 +84,10 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({
         <button
           onClick={onSelect}
           disabled={isLoading || isLoadingThis}
-          className={`w-full mt-auto py-3 px-6 rounded-lg font-semibold transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-opacity-75 button-active-pop button-hover-glow flex items-center justify-center gap-2
-            ${isCurrent ? 'button-secondary bg-green-600/20 hover:bg-green-600/30 border-green-500 text-green-300 focus:ring-green-400' : 
-                         (plan.isFree ? 'button-secondary focus:ring-slate-400' : 'button-primary text-white focus:ring-pink-400')}
+          title={isCurrent ? `This is your current plan: ${plan.name}` : `Select ${plan.name} plan`}
+          className={`w-full mt-auto py-3 px-6 rounded-lg font-semibold transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 button-active-pop button-hover-glow flex items-center justify-center gap-2 group
+            ${isCurrent ? 'button-secondary bg-green-600/20 hover:bg-green-600/30 border-green-500 text-green-300 focus-visible:ring-green-400' : 
+                         (plan.isFree ? 'button-secondary focus-visible:ring-slate-400' : 'button-primary text-white focus-visible:ring-pink-400')}
             ${isLoadingThis ? 'opacity-70 cursor-wait' : ''}
           `}
         >
@@ -108,7 +119,8 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({
         <div className="container mx-auto max-w-5xl">
           <button
             onClick={onBack}
-            className="text-text-accent hover:text-text-accent-hover transition-colors duration-200 text-sm hover:underline mb-4 inline-flex items-center gap-1 group"
+            className="text-text-accent hover:text-text-accent-hover transition-colors duration-200 text-sm hover:underline mb-4 inline-flex items-center gap-1 group focus:outline-none focus-visible:ring-1 focus-visible:ring-border-focus-alt rounded"
+            title="Go back to previous page"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

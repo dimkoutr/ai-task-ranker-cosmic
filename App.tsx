@@ -7,6 +7,7 @@ import TaskRankerPage from './pages/TaskRankerPage';
 import SettingsPage from './pages/SettingsPage';
 import SubscriptionPage from './pages/SubscriptionPage'; // New Subscription Page
 import UpgradeModal from './components/UpgradeModal'; // New Upgrade Modal
+import ApiKeyWarningBanner from './components/ApiKeyWarningBanner'; // Import the banner
 import * as authService from './services/authService';
 import * as storageService from './services/storageService';
 import * as themeService from './services/themeService';
@@ -328,16 +329,18 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="page-transition-container">
+      <ApiKeyWarningBanner /> {/* Render the banner here */}
+      <div className="page-transition-container pt-16"> {/* Added pt-16 to account for banner height if visible */}
         {displayedFeedback && (
             <div 
-                className={`fixed top-5 right-5 z-[100] p-4 rounded-lg shadow-xl text-sm border ${feedbackAnimationClass} ${
+                className={`fixed top-20 right-5 z-[100] p-4 rounded-lg shadow-xl text-sm border ${feedbackAnimationClass} ${ // Adjusted top-20 from top-5
                     displayedFeedback.type === 'success' ? 'bg-green-600/80 backdrop-blur-sm border-green-500 text-white' : 
                     displayedFeedback.type === 'error' ? 'bg-red-600/80 backdrop-blur-sm border-red-500 text-white' :
                     displayedFeedback.type === 'warning' ? 'bg-yellow-500/80 backdrop-blur-sm border-yellow-400 text-black' :
                     'bg-sky-600/80 backdrop-blur-sm border-sky-500 text-white'
                 }`}
                 role={displayedFeedback.type === 'error' ? 'alert' : 'status'}
+                aria-live="polite" // Added for accessibility
             >
                 {displayedFeedback.text}
             </div>

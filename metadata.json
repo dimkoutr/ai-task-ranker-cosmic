@@ -1,0 +1,6 @@
+{
+  "name": "Copy 2 of AI Task Ranker - Cosmic Edition ",
+  "description": "A multi-list to-do application where tasks are automatically ranked by importance using AI (Gemini API). Users can sign up, sign in, create multiple task lists, and manage tasks within each list. Features Cosmic Glow theme.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
